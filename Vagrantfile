@@ -21,4 +21,24 @@ Vagrant.configure("2") do |config|
       systemctl enable --now apache2
     SHELL
   end
+
+  config.vm.define "appserver" do |app|
+    app.vm.hostname = "appserver"
+    app.vm.network "private_network", ip: "192.168.56.12"
+
+    app.vm.provider "virtualbox" do |vb|
+      vb.memory = 1024
+      vb.cpus = 1
+    end
+  end
+
+  config.vm.define "dbserver" do |db|
+    db.vm.hostname = "dbserver"
+    db.vm.network "private_network", ip: "192.168.56.13"
+
+    db.vm.provider "virtualbox" do |vb|
+      vb.memory = 1024
+      vb.cpus = 1
+    end
+  end
 end
