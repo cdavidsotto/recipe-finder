@@ -24,8 +24,6 @@ INSERT INTO recipes (id, name, instructions) VALUES
  'Cook oats in milk, stirring until thick. Top with sliced banana.'),
 (6, 'Lentil tomato soup',
  'Simmer lentils, tomatoes and onion in water until the lentils are tender.'),
-(7, 'This one is a test',
- 'To see if this updates in real time. No. database setup.sql need to be run.')
 ON DUPLICATE KEY UPDATE
     name = VALUES(name),
     instructions = VALUES(instructions);
