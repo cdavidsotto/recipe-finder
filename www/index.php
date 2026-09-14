@@ -42,7 +42,7 @@ if ($searched && count($selected) > 0) {
     // One placeholder for each selected ingredient.
     $placeholders = implode(',', array_fill(0, count($selected), '?'));
 
-if ($mode === 'and') {
+if ($mode === 'or') {
     $sql = "
         SELECT r.id, r.name, r.instructions
         FROM recipes r
@@ -93,11 +93,11 @@ if ($mode === 'and') {
     <select name="mode" id="mode">
         <option value="or"
             <?= $mode === 'or' ? 'selected' : '' ?>>
-            AND
+            OR — any matching ingredient
         </option>
         <option value="and"
             <?= $mode === 'and' ? 'selected' : '' ?>>
-            OR
+            Can make — all required ingredients
         </option>
     </select>
     <p></p>
