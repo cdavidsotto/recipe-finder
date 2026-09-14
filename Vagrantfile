@@ -14,12 +14,7 @@ Vagrant.configure("2") do |config|
       vb.cpus = 1
     end
 
-    web.vm.provision "shell", inline: <<-SHELL
-      set -e
-      apt-get update
-      apt-get install -y apache2
-      systemctl enable --now apache2
-    SHELL
+    web.vm.provision "shell", path: "build-webserver-vm.sh"
   end
 
   config.vm.define "appserver" do |app|

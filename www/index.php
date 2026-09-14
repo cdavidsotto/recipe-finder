@@ -1,20 +1,64 @@
 <?php
-$pdo = new PDO(
-    'mysql:host=192.168.56.13;dbname=recipefinder;charset=utf8mb4',
-    'recipeapp',
-    'recipe_demo_pw',
-    [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]
-);
+$db_host = '192.168.56.13';
+$db_name = 'recipefinder';
+$db_user = 'recipeapp';
+$db_password = 'recipe_demo_pw';
 
-$recipes = $pdo->query(
-    'SELECT id, name, instructions FROM recipes ORDER BY id'
-)->fetchAll();
+$dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4";
+$pdo = new PDO($dsn, $db_user, $db_password);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-function escape($value) {
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+function escape($text) {
+    return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+}
+
+// Load checkbox choices from the database on every request.
+$ingredients = $pdo->query(
+    "SELECT DISTINCT ingredient
+     FROM recipe_ingredients
+     ORDER BY ingredient"
+)->fetchAll(PDO::FETCH_COLUMN);
+
+// Accept only ingredient names that exist in our database.
+$submitted = $_GET['ingredients'] ?? [];
+if (!is_array($submitted)) {
+    $submitted = [];
+}
+
+$selected = [];
+foreach ($ingredients as $ingredient) {
+    if (in_array($ingredient, $submitted, true)) {
+        $selected[] = $ingredient;
+    }
+}
+
+$searched = isset($_GET['search']);
+$recipes = [];
+
+if ($searched && count($selected) > 0) {
+    // One placeholder for each selected ingredient.
+    $placeholders = implode(',', array_fill(0, count($selected), '?'));
+
+    $sql = "
+        SELECT r.id, r.name, r.instructions
+        FROM recipes r
+        WHERE EXISTS (
+            SELECT 1
+            FROM recipe_ingredients ri
+            WHERE ri.recipe_id = r.id
+        )
+        AND NOT EXISTS (
+            SELECT 1
+            FROM recipe_ingredients ri
+            WHERE ri.recipe_id = r.id
+              AND ri.ingredient NOT IN ($placeholders)
+        )
+        ORDER BY r.name
+    ";
+
+    $query = $pdo->prepare($sql);
+    $query->execute($selected);
+    $recipes = $query->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 <!DOCTYPE html>
@@ -24,14 +68,41 @@ function escape($value) {
     <title>Recipe Finder</title>
 </head>
 <body>
-    <h1>Recipe Finder</h1>
-    <p>Recipes loaded from our database:</p>
+<h1>Recipe Finder</h1>
+<p>Select the ingredients you have. Water is assumed available.</p>
 
-    <?php foreach ($recipes as $recipe): ?>
-        <article>
-            <h2><?= escape($recipe['name']) ?></h2>
-            <p><?= escape($recipe['instructions']) ?></p>
-        </article>
+<form method="get" action="/">
+    <?php foreach ($ingredients as $ingredient): ?>
+        <label>
+            <input
+                type="checkbox"
+                name="ingredients[]"
+                value="<?= escape($ingredient) ?>"
+                <?= in_array($ingredient, $selected, true) ? 'checked' : '' ?>
+            >
+            <?= escape($ingredient) ?>
+        </label>
+        <br>
     <?php endforeach; ?>
+
+    <button type="submit" name="search" value="1">Find recipes</button>
+</form>
+
+<?php if ($searched): ?>
+    <h2>Matching recipes</h2>
+
+    <?php if (count($selected) === 0): ?>
+        <p>Please select at least one ingredient.</p>
+    <?php elseif (count($recipes) === 0): ?>
+        <p>No recipes match your available ingredients.</p>
+    <?php else: ?>
+        <?php foreach ($recipes as $recipe): ?>
+            <article>
+                <h3><?= escape($recipe['name']) ?></h3>
+                <p><?= escape($recipe['instructions']) ?></p>
+            </article>
+        <?php endforeach; ?>
+    <?php endif; ?>
+<?php endif; ?>
 </body>
 </html>
