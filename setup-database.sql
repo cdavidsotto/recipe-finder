@@ -23,7 +23,7 @@ INSERT INTO recipes (id, name, instructions) VALUES
 (5, 'Banana porridge',
  'Cook oats in milk, stirring until thick. Top with sliced banana.'),
 (6, 'Lentil tomato soup',
- 'Simmer lentils, tomatoes and onion in water until the lentils are tender.'),
+ 'Simmer lentils, tomatoes and onion in water until the lentils are tender.')
 ON DUPLICATE KEY UPDATE
     name = VALUES(name),
     instructions = VALUES(instructions);
