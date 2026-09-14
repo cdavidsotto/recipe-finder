@@ -33,12 +33,28 @@ foreach ($ingredients as $ingredient) {
 }
 
 $searched = isset($_GET['search']);
+$mode = ($_GET['mode'] ?? 'or') === 'and'
+    ? 'and'
+    : 'or';
 $recipes = [];
 
 if ($searched && count($selected) > 0) {
     // One placeholder for each selected ingredient.
     $placeholders = implode(',', array_fill(0, count($selected), '?'));
 
+if ($mode === 'and') {
+    $sql = "
+        SELECT r.id, r.name, r.instructions
+        FROM recipes r
+        WHERE EXISTS (
+            SELECT 1
+            FROM recipe_ingredients ri
+            WHERE ri.recipe_id = r.id
+              AND ri.ingredient IN ($placeholders)
+        )
+        ORDER BY r.name
+    ";
+} else {
     $sql = "
         SELECT r.id, r.name, r.instructions
         FROM recipes r
@@ -55,6 +71,7 @@ if ($searched && count($selected) > 0) {
         )
         ORDER BY r.name
     ";
+}
 
     $query = $pdo->prepare($sql);
     $query->execute($selected);
@@ -72,6 +89,18 @@ if ($searched && count($selected) > 0) {
 <p>Select the ingredients you have. Water is assumed available.</p>
 
 <form method="get" action="/">
+    <label for="mode">Search mode:</label>
+    <select name="mode" id="mode">
+        <option value="or"
+            <?= $mode === 'or' ? 'selected' : '' ?>>
+            AND
+        </option>
+        <option value="and"
+            <?= $mode === 'and' ? 'selected' : '' ?>>
+            OR
+        </option>
+    </select>
+    <p></p>
     <?php foreach ($ingredients as $ingredient): ?>
         <label>
             <input
