@@ -30,6 +30,8 @@ Vagrant.configure("2") do |config|
       vb.memory = 1024
       vb.cpus = 1
     end
+
+    app.vm.provision "shell", path: "build-appserver-vm.sh"
   end
 
   config.vm.define "dbserver" do |db|
@@ -39,6 +41,8 @@ Vagrant.configure("2") do |config|
     db.vm.provider "virtualbox" do |vb|
       vb.memory = 1024
       vb.cpus = 1
+
+    db.vm.provision "shell", path: "build-dbserver-vm.sh"
     end
   end
 end
