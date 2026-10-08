@@ -28,7 +28,7 @@ resource "aws_instance" "web_server" {
     instance_type = "t2.micro"
     key_name      = "vockey"
 
-    vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+    vpc_security_group_ids = [aws_security_group.allow_ssh.id, aws_security_group.allow_web.id]
 
     user_data = <<-EOF
         #!/bin/bash
@@ -73,8 +73,4 @@ resource "aws_security_group" "allow_web" {
 
 output "web_server_ip" {
     value = aws_instance.web_server.public_ip
-    vpc_security_group_ids = [
-        aws_security_group.allow_ssh.id,
-        aws_security_group.allow_web.id
-    ]
 }

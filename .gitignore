@@ -1,4 +1,6 @@
 .vagrant/
-tf-deploy/.terraform/providers/registry.terraform.io/hashicorp/aws/6.67.0/windows_amd64/LICENSE.txt
-tf-deploy/.terraform/providers/registry.terraform.io/hashicorp/aws/6.67.0/windows_amd64/terraform-provider-aws_v6.67.0_x5.exe
-tf-deploy/terraform.tfstate
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.pem
