@@ -1,4 +1,4 @@
 * text=auto
 *.sh text eol=lf
 *.sql text eol=lf
-*.conf text eol=lfsudo mysql recipefinder -e "SELECT id, name FROM recipes;"
+*.conf text eol=lf
