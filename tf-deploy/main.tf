@@ -71,6 +71,30 @@ resource "aws_security_group" "allow_web" {
     }
 }
 
+resource "aws_instance" "app_server" {
+    ami           = "ami-0360c520857e3138f"
+    instance_type = "t2.micro"
+    key_name      = "vockey"
+
+    vpc_security_group_ids = [aws_security_group.allow_ssh.id, aws_security_group.allow_web.id]
+
+    user_data = <<-EOF
+        #!/bin/bash
+        sudo apt update
+        sudo apt install -y apache2
+        sudo systemctl start apache2
+        sudo systemctl enable apache2
+    EOF
+
+    tags = {
+        Name = "AppServer"
+    }
+}
+
 output "web_server_ip" {
     value = aws_instance.web_server.public_ip
+}
+
+output "app_server_ip" {
+    value = aws_instance.app_server.public_ip
 }
