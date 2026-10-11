@@ -1,5 +1,9 @@
+-- Recipe Finder schema and seed data.
+-- Safe to run more than once: tables are only created if missing,
+-- and seed rows are updated rather than duplicated.
+
 CREATE TABLE IF NOT EXISTS recipes (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     instructions TEXT NOT NULL
 );
@@ -9,6 +13,40 @@ CREATE TABLE IF NOT EXISTS recipe_ingredients (
     ingredient VARCHAR(50) NOT NULL,
     PRIMARY KEY (recipe_id, ingredient),
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+);
+
+-- A named shopping list. Its items are a saved snapshot of the
+-- Lambda result, so they only change when the list is regenerated.
+CREATE TABLE IF NOT EXISTS shopping_lists (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Inputs kept so a list can be regenerated later.
+CREATE TABLE IF NOT EXISTS shopping_list_recipes (
+    list_id INT NOT NULL,
+    recipe_id INT NOT NULL,
+    PRIMARY KEY (list_id, recipe_id),
+    FOREIGN KEY (list_id) REFERENCES shopping_lists(id),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+);
+
+CREATE TABLE IF NOT EXISTS shopping_list_have (
+    list_id INT NOT NULL,
+    ingredient VARCHAR(50) NOT NULL,
+    PRIMARY KEY (list_id, ingredient),
+    FOREIGN KEY (list_id) REFERENCES shopping_lists(id)
+);
+
+-- Output: copied text, not links to the catalogue.
+CREATE TABLE IF NOT EXISTS shopping_list_items (
+    list_id INT NOT NULL,
+    ingredient VARCHAR(50) NOT NULL,
+    needed_for VARCHAR(500) NOT NULL,
+    PRIMARY KEY (list_id, ingredient),
+    FOREIGN KEY (list_id) REFERENCES shopping_lists(id)
 );
 
 INSERT INTO recipes (id, name, instructions) VALUES

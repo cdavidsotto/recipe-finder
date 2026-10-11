@@ -1,16 +1,5 @@
 <?php
-$db_host = '192.168.56.13';
-$db_name = 'recipefinder';
-$db_user = 'recipeapp';
-$db_password = 'recipe_demo_pw';
-
-$dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4";
-$pdo = new PDO($dsn, $db_user, $db_password);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-function escape($text) {
-    return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-}
+require __DIR__ . '/db.php';
 
 // Load checkbox choices from the database on every request.
 $ingredients = $pdo->query(
@@ -78,14 +67,7 @@ if ($mode === 'or') {
     $recipes = $query->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Recipe Finder</title>
-</head>
-<body>
-<h1>Recipe Finder</h1>
+<?php page_header('Recipe Finder'); ?>
 <p>Select the ingredients you have. Water is assumed available.</p>
 
 <form method="get" action="/">
@@ -133,5 +115,4 @@ if ($mode === 'or') {
         <?php endforeach; ?>
     <?php endif; ?>
 <?php endif; ?>
-</body>
-</html>
+<?php page_footer(); ?>

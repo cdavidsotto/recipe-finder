@@ -91,6 +91,26 @@ resource "aws_instance" "app_server" {
     }
 }
 
+resource "aws_security_group" "allow_mysql" {
+    name        = "allow_mysql"
+    description = "Allow inbound MySQL traffic"
+
+    ingress {
+        description = "MySQL from anywhere"
+        from_port   = 3306
+        to_port     = 3306
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    egress {
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
 output "web_server_ip" {
     value = aws_instance.web_server.public_ip
 }
