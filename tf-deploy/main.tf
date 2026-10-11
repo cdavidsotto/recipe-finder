@@ -3,6 +3,21 @@ provider "aws" {
     profile = "cosc349"
 }
 
+variable "repo_url" {
+    description = "Public Git URL of this repository"
+    default     = "https://github.com/cdavidsotto/recipe-finder.git"
+}
+
+variable "db_host" {
+    description = "RDS endpoint, created manually in the console"
+    default     = "recipefinder-db.cum548yzqlxl.us-east-1.rds.amazonaws.com"
+}
+
+variable "db_password" {
+    description = "RDS admin password (typed at apply time, never committed)"
+    sensitive   = true
+}
+
 resource "aws_security_group" "allow_ssh" {
     name        = "allow_ssh"
     description = "Allow inbound SSH traffic"
@@ -30,13 +45,9 @@ resource "aws_instance" "web_server" {
 
     vpc_security_group_ids = [aws_security_group.allow_ssh.id, aws_security_group.allow_web.id]
 
-    user_data = <<-EOF
-        #!/bin/bash
-        sudo apt update
-        sudo apt install -y apache2
-        sudo systemctl start apache2
-        sudo systemctl enable apache2
-    EOF
+    user_data = templatefile("${path.module}/build-webserver-vm.tpl", {
+        app_private_ip = aws_instance.app_server.private_ip
+    })
 
     tags = {
         Name = "WebServer"
@@ -78,13 +89,13 @@ resource "aws_instance" "app_server" {
 
     vpc_security_group_ids = [aws_security_group.allow_ssh.id, aws_security_group.allow_web.id]
 
-    user_data = <<-EOF
-        #!/bin/bash
-        sudo apt update
-        sudo apt install -y apache2
-        sudo systemctl start apache2
-        sudo systemctl enable apache2
-    EOF
+    iam_instance_profile = "LabInstanceProfile"
+
+    user_data = templatefile("${path.module}/build-appserver-vm.tpl", {
+        repo_url    = var.repo_url
+        db_host     = var.db_host
+        db_password = var.db_password
+    })
 
     tags = {
         Name = "AppServer"
