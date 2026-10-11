@@ -2,8 +2,11 @@
 apt-get update
 apt-get install -y apache2 php libapache2-mod-php php-mysql mysql-client git
 
-# AWS CLI, used by www/lambda.php to call the shopping-list function.
-snap install aws-cli --classic
+  # AWS CLI v2 from AWS's installer, used by www/lambda.php to call Lambda.
+  # (The snap version refuses to run as www-data, whose home is /var/www.)
+  curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
+  unzip -q -o /tmp/awscliv2.zip -d /tmp
+  /tmp/aws/install
 
 # Fetch the application code.
 git clone ${repo_url} /opt/recipe-finder

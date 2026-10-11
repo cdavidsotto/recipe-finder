@@ -17,9 +17,9 @@ function build_shopping_list($config, $recipes, $have) {
     $out_file = tempnam(sys_get_temp_dir(), 'list-out-');
     file_put_contents($in_file, $payload);
 
-    // Full path: snap installs the CLI in /snap/bin, which is not on
-    // Apache's PATH.
-    $command = 'HOME=/tmp /snap/bin/aws lambda invoke'
+    // Full path to the CLI from AWS's installer (the snap version refuses
+    // to run for www-data, whose home is outside /home).
+    $command = 'HOME=/tmp /usr/local/bin/aws lambda invoke'
         . ' --region ' . escapeshellarg($config['lambda']['region'])
         . ' --function-name ' . escapeshellarg($config['lambda']['function'])
         . ' --payload ' . escapeshellarg('fileb://' . $in_file)
