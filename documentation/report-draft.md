@@ -10,9 +10,9 @@ of what to buy (with which recipe needs each item). Saved lists can be reopened 
 change.
 
 For the recording the app was reached at `http://<web_server_ip>/` (the public IP of the web server EC2
-instance, output by Terraform). **Status at submission:** `<FILL IN: e.g. deployed and working; EC2 and RDS
-stopped by Learner Lab session end and restartable; Terraform configuration in the repository recreates the
-servers in about 3 minutes>`.
+instance, output by Terraform). Deployed and working at submission. EC2 and RDS are stopped automatically 
+when the Learner Lab session ends and can be restarted from the console; terraform apply recreates the servers 
+in about 3 minutes.
 
 ## 2. Architecture
 
@@ -113,7 +113,7 @@ state backup file was accidentally committed and was removed from history before
 
 ## 6. Cost and resource lifecycle
 
-Prices for us-east-1, on-demand, checked 12 Oct 2026 `<FILL IN: confirm each with calculator.aws>`. Learner Lab
+Prices for us-east-1, on-demand, checked 12 Oct 2026 against the AWS Pricing Calculator (calculator.aws). Learner Lab
 accounts have no free tier; usage is drawn from the US$50 lab credit. A month is taken as 730 hours.
 
 | Resource | Unit price | Entirely idle (running, no users) | Lightly used |
@@ -148,16 +148,26 @@ $1.28 (EBS) + $2.30 (RDS) = **about $3.6 per month**. (AWS restarts a stopped RD
 
 ## 7. Recording
 
-Recording URL: `<FILL IN>`. Timeline (if no narration): `<FILL IN>`.
+Recording URL: `https://youtu.be/7rrnpt-25jE`. Timeline:
+0:01 = Added a recipe page.
+0:10 = Recipe Saved, write to the RDS (mysql)
+0:13 = Searched for an ingredient within the recipe (banana), results (read from the RDS)
+0:23 = Shopping list creation, including the new recipe we made, as well as a pre-existing one.
+0:37 = Result of the lambda function, saved in the RDS. Any subtracted ingredients were the ones we 'Already Had'
+0:42 = Saved lists appear in the Shopping Lists Page
+0:54 = App Server Terminal
+1:19 = EC2, RDS and Lambda Consoles.
 
 ## 8. AI-use statement
 
-`<REWRITE IN YOUR OWN WORDS>` I used Claude (Anthropic) throughout. It explained the course labs and lectures,
+I used Claude (Anthropic) throughout. It explained the course labs and lectures,
 quizzed me on each step, and guided the Terraform, security-group, RDS and Lambda work, which I typed and ran myself.
 It drafted the PHP pages in `www/`, the schema changes in `setup-database.sql`, `verify-cloud.ps1`, the README and a
 draft of this report. I checked its output by deploying it, testing the workflow in the browser and with the
 automated check, reading the server logs when things failed, and editing the documentation. No credentials or
-private keys were shared with the AI.
+private keys were shared with the AI. 
+
+The website layout, and any additional features of the application from the first assignment, were coded primarily by Claude.
 
 ## 9. Sources
 
@@ -168,4 +178,4 @@ private keys were shared with the AI.
 - Pricing (accessed 12 Oct 2026): AWS Lambda pricing (aws.amazon.com/lambda/pricing); Amazon EBS pricing
   (aws.amazon.com/ebs/pricing); AWS public IPv4 charge (AWS News Blog, "New - AWS Public IPv4 Address Charge");
   Amazon RDS for MySQL pricing (aws.amazon.com/rds/mysql/pricing); EC2 and RDS instance rates cross-checked with
-  calculator.holori.com. `<confirm with calculator.aws>`
+  calculator.holori.com, and confirmed in the AWS Pricing Calculator (calculator.aws), accessed 12 Oct 2026.
