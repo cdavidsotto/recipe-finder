@@ -1,0 +1,116 @@
+/* Simple shared styling for every page (linked from page_header in db.php). */
+
+:root {
+    --ink: #2b2620;
+    --muted: #6f665c;
+    --paper: #fbf8f3;
+    --card: #ffffff;
+    --line: #e6ded2;
+    --accent: #c2562b;
+    --accent-dark: #9e4220;
+}
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+nav {
+    background: var(--ink);
+    padding: 0.8rem max(1rem, calc((100% - 760px) / 2));
+}
+
+nav a {
+    color: #f3ece2;
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 1.25rem;
+}
+
+nav a:hover {
+    color: #ffb08a;
+}
+
+main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+
+h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2.2rem;
+    margin: 0.5rem 0 1rem;
+}
+
+h2, h3 {
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+form, article, table {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+}
+
+article h3 {
+    margin: 0 0 0.25rem;
+    color: var(--accent-dark);
+}
+
+label {
+    cursor: pointer;
+}
+
+input[type="text"], textarea, select {
+    font: inherit;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--accent);
+}
+
+button {
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--accent-dark);
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--line);
+}
+
+a {
+    color: var(--accent-dark);
+}
+
+p strong {
+    color: var(--accent-dark);
+}

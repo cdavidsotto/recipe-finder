@@ -25,20 +25,24 @@ function page_header($title) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= escape($title) ?> - Recipe Finder</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <nav>
-    <a href="/">Find recipes</a> |
-    <a href="/add_recipe.php">Add a recipe</a> |
+    <a href="/">Find recipes</a>
+    <a href="/add_recipe.php">Add a recipe</a>
     <a href="/lists.php">Shopping lists</a>
 </nav>
+<main>
 <h1><?= escape($title) ?></h1>
     <?php
 }
 
 function page_footer() {
     ?>
+</main>
 </body>
 </html>
     <?php
