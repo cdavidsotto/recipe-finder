@@ -1,6 +1,6 @@
 #!/bin/bash
 apt-get update
-apt-get install -y apache2 php libapache2-mod-php php-mysql mysql-client git
+apt-get install -y apache2 php libapache2-mod-php php-mysql mysql-client git unzip
 
   # AWS CLI v2 from AWS's installer, used by www/lambda.php to call Lambda.
   # (The snap version refuses to run as www-data, whose home is /var/www.)
